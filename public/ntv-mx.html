@@ -16,21 +16,15 @@
 		<script src="js/skel.min.js"></script>
 		<script src="js/skel-layers.min.js"></script>
 		<script src="js/init.js"></script>
-		<script src="js/jquery.loadJSON.js"></script>
-		<script>
-			var jf = require('jsonfile')
-			var util = require('util')
-
-			var file = 'data.json'
-			jf.readFile(file, function(err, obj) {
-			  console.log(util.inspect(obj))
-			  console.log(file)
-			})
-		</script>
+		<script type="text/javascript" src="deps/jquery.min.js"></script>
+		<script type="text/javascript" src="deps/underscore.js"></script>
+		<script type="text/javascript" src="deps/opt/jsv.js"></script>
+		<script type="text/javascript" src="lib/jsonform.js"></script>
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
 			<link rel="stylesheet" href="css/style.css" />
 			<link rel="stylesheet" href="css/style-desktop.css" />
+			<link rel="stylesheet" style="text/css" href="deps/opt/bootstrap.css" />
 		</noscript>
 
 		<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
@@ -72,66 +66,64 @@
 
 						<!-- Content -->
 							<article>
-
-                                                                <form id="credentials">
-
-								<h3>User Name:</h3>
-                               
-                                                                <input type="text" id="username" required>
-								
-								<h3>Password:</h3>
-
-								<input type="text" name="password" required>
-								
-								<h3>Select your subscription:</h3>
-                                           
-                                                                <select id="subscription">
-                                                                    <option value="UK Premium">UK Premium</option>
-                                                                    <option value="Scandinavian">Scandinavian</option>
-                                                                    <option value="Ultimate NTV">Ultimate NTV</option>
-                                                                    <option value="Russian Tv">Russian TV</option>
-                                                                    <option value="Sports">Sports</option>
-                                                                </select><br>
-
-								<button type="submit">Submit</button>
-                                                                </form>
-
-								<script>
-									$.getJSON('data.json', function(data) {
-									var subscription = data.service[0].subscription;
-									var username = data.service[0].username
-									var username_element = document.getElementById("username");
-									username_element.value = username;
-									var subscription_element = document.getElementById("subscription");
-									subscription_element.value = subscription;
-									});
-								</script>
-
-								<script>
-								    (function($){
-									function processForm( e ){
-									    $.ajax({
-										url: 'settings.php',
-										dataType: 'text',
-										type: 'post',
-										contentType: 'application/x-www-form-urlencoded',
-										data: $(this).serialize(),
-										success: function( data, textStatus, jQxhr ){
-										    $('#response pre').html( data );
-										},
-										error: function( jqXhr, textStatus, errorThrown ){
-										    console.log( errorThrown );
+								<div id="res" class="alert"></div>
+								<form></form>
+								<script type="text/javascript">
+								  $('form').jsonForm({
+									schema: {
+									  username: {
+										type: 'string',
+										title: 'Username',
+										required: true
+									  },
+									  password: {
+										type: 'string',
+										title: 'Password',
+										required: true
+									  },
+									  subscription: {
+										type: 'string',
+										title: 'Select Subscription',
+										"enum": [ 'ukp', 'scan', 'untv', 'rtv', 'sports' ]
 										}
-									    });
-
-									    e.preventDefault();
+									},
+									form: [  
+										{
+											key: 'username',
+											type: 'text'
+										},
+										{
+											key: 'password',
+											type: 'password'
+										},
+										{
+											key: 'subscription',
+										    titleMap: { 
+											ukp: 'UK Premium',
+											scan: 'Scandinavian',
+											untv: 'Ultimate NTV',
+											rtv: 'Russian TV',
+											sports: 'Sports'
+											}
+										},
+										{
+										  type: 'submit',
+										  title: 'OK Go - This Too Shall Pass'
+										}
+									],
+									onSubmit: function (errors, values) {
+									  if (errors) {
+										$('#res').html('<p>I beg your pardon?</p>');
+									  }
+									  else {
+										$('#res').html('<p>Hello ' + values.username + '.' +
+										  (values.password ? '<br/>Your password is: ' + values.password + '.' : '') +
+										  (values.subscription ? '<br/>Your subscription is: ' + values.subscription + '.' : '') +
+										  '</p>');
+									  }
 									}
-
-									$('credentials').submit( processForm );
-								    })(jQuery);
+								  });
 								</script>
-
-
 
 							</article>
 
