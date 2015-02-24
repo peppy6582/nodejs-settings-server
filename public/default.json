@@ -1,0 +1,12 @@
+{"service":[
+            {
+                "name":"NTV.mx",
+                "port":"9128",
+                "sources": "ntv-mx.json"
+            },
+            {
+                "name":"USTVNow",
+                "port":"9129",
+                "sources": "ustvnow.json"
+            }
+]}
