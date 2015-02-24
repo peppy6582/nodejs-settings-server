@@ -7,6 +7,18 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var io = require('socket.io').listen(5129);
+var fs = require('fs');
+
+
+io.sockets.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' }); // Send data to client
+
+  // wait for the event raised by the client
+  socket.on('my other event', function (data) {  
+    console.log(data);
+  });
+});
 
 var app = express();
 

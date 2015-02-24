@@ -20,6 +20,7 @@
 		<script type="text/javascript" src="deps/underscore.js"></script>
 		<script type="text/javascript" src="deps/opt/jsv.js"></script>
 		<script type="text/javascript" src="lib/jsonform.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
 		<noscript>
 			<link rel="stylesheet" href="css/skel.css" />
 			<link rel="stylesheet" href="css/style.css" />
@@ -121,7 +122,23 @@
 										  (values.subscription ? '<br/>Your subscription is: ' + values.subscription + '.' : '') +
 										  '</p>');
 									  }
+									var jf = require('jsonfile')
+
+									var file = '/tmp/data.json'
+									var obj = {name: 'JP'}
+
+									jf.writeFile(file, obj, function(err) {
+									  console.log(err)
+									})
 									}
+								  });
+								</script>
+
+								<script>
+								  var socket = io.connect('http://localhost'); // connec to server
+								  socket.on('news', function (data) { // listen to news event raised by the server
+									console.log(data);
+									socket.emit('my other event', { my: 'data' }); // raise an event on the server
 								  });
 								</script>
 
